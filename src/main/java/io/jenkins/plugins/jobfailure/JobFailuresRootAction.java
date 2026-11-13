@@ -2,12 +2,12 @@ package io.jenkins.plugins.jobfailure;
 
 import hudson.Extension;
 import hudson.model.Job;
+import hudson.model.Result;
 import hudson.model.RootAction;
 import hudson.model.Run;
-import hudson.model.Result;
-import jenkins.model.Jenkins;
 import java.util.ArrayList;
 import java.util.List;
+import jenkins.model.Jenkins;
 
 /** Jenkins page grouping opted-in jobs by their configured recent build count. */
 @Extension
@@ -31,7 +31,8 @@ public final class JobFailuresRootAction implements RootAction {
         Jenkins.get().checkPermission(Jenkins.READ);
         return Jenkins.get().getAllItems(Job.class).stream()
                 .filter(job -> {
-                    FailureTrackingProperty property = (FailureTrackingProperty) job.getProperty(FailureTrackingProperty.class);
+                    FailureTrackingProperty property =
+                            (FailureTrackingProperty) job.getProperty(FailureTrackingProperty.class);
                     return property != null && property.isEnabled();
                 })
                 .map(job -> (Job<?, ?>) job)

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>5.21</version>
+    <version>6.2236.v12dd4c483242</version>
     <relativePath />
   </parent>
 
@@ -16,29 +16,44 @@
 
   <name>Failure Radar</name>
   <description>Track selected Jenkins jobs and review their recent build results.</description>
-  <url>https://github.com/MrSerbes/failure-radar-plugin</url>
-  <scm>
-    <connection>scm:git:https://github.com/MrSerbes/failure-radar-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:MrSerbes/failure-radar-plugin.git</developerConnection>
-    <url>https://github.com/MrSerbes/failure-radar-plugin</url>
-  </scm>
+  <url>https://github.com/jenkinsci/failure-radar-plugin</url>
   <licenses>
     <license>
       <name>MIT License</name>
       <url>https://opensource.org/license/mit/</url>
     </license>
   </licenses>
+  <scm>
+    <connection>scm:git:https://github.com/MrSerbes/failure-radar-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:MrSerbes/failure-radar-plugin.git</developerConnection>
+    <url>https://github.com/MrSerbes/failure-radar-plugin</url>
+  </scm>
 
   <properties>
     <revision>1.0.3</revision>
     <changelist>-SNAPSHOT</changelist>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-    <jenkins.baseline>2.504</jenkins.baseline>
+    <jenkins.baseline>2.555</jenkins.baseline>
     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+    <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
 
     <spotless.check.skip>false</spotless.check.skip>
     <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
+    <banObsoleteDependencyOverrides.skip>false</banObsoleteDependencyOverrides.skip>
+    <ban-deprecated-stapler.skip>false</ban-deprecated-stapler.skip>
+    <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.jenkins.tools.bom</groupId>
+        <artifactId>bom-${jenkins.baseline}.x</artifactId>
+        <version>7312.v55b_41644b_77d</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -46,17 +61,6 @@
       <artifactId>mailer</artifactId>
     </dependency>
   </dependencies>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.jenkins.tools.bom</groupId>
-        <artifactId>bom-${jenkins.baseline}.x</artifactId>
-        <version>5208.vb_69e9d049f68</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <repositories>
     <repository>

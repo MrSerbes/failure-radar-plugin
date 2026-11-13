@@ -12,7 +12,6 @@ Failure Radar is a Jenkins plugin for tracking selected jobs and spotting repeat
 
 ## Requirements
 
-- Jenkins 2.504.3 or newer.
 - The Jenkins Mailer plugin and outgoing email settings configured in Jenkins to use email notifications. Mailer is installed as a plugin dependency.
 
 The plugin's interface is available in English and Turkish. Other interface languages fall back to English. Notification emails are always sent in English.

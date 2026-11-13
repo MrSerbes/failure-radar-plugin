@@ -2,19 +2,19 @@ package io.jenkins.plugins.jobfailure;
 
 import hudson.Extension;
 import hudson.ExtensionList;
-import jenkins.model.Jenkins;
 import hudson.model.ManagementLink;
+import hudson.scheduler.CronTabList;
+import hudson.scheduler.Hash;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import hudson.scheduler.CronTabList;
-import hudson.scheduler.Hash;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
-import org.kohsuke.stapler.verb.POST;
 import org.kohsuke.stapler.verb.GET;
-import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 /** Dedicated Manage Jenkins page for Failure Radar settings. */
 @Extension
@@ -70,7 +70,8 @@ public final class JobFailuresManagementLink extends ManagementLink {
     }
 
     @GET
-    public void doPreviewSchedule(@QueryParameter String schedule, StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
+    public void doPreviewSchedule(@QueryParameter String schedule, StaplerRequest2 req, StaplerResponse2 rsp)
+            throws IOException {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         String expression = schedule == null || schedule.isBlank() ? "H 8 * * *" : schedule.trim();
         rsp.setContentType("text/plain;charset=UTF-8");
@@ -86,8 +87,8 @@ public final class JobFailuresManagementLink extends ManagementLink {
             for (int i = 0; i < minutesToSearch; i++) {
                 if (cron.check(candidate)) {
                     Locale locale = JobFailuresI18n.supportedLocale(req.getLocale());
-                    String formatted = new SimpleDateFormat("EEE, MMM d, yyyy HH:mm z", locale)
-                            .format(candidate.getTime());
+                    String formatted =
+                            new SimpleDateFormat("EEE, MMM d, yyyy HH:mm z", locale).format(candidate.getTime());
                     rsp.getWriter().print(JobFailuresI18n.text(locale, "schedule.next", formatted));
                     return;
                 }
@@ -126,8 +127,7 @@ public final class JobFailuresManagementLink extends ManagementLink {
         }
 
         try {
-            ExtensionList.lookupSingleton(JobFailuresEmailNotifier.class)
-                    .sendTestEmail(recipients.trim(), count);
+            ExtensionList.lookupSingleton(JobFailuresEmailNotifier.class).sendTestEmail(recipients.trim(), count);
             rsp.sendRedirect2(req.getContextPath() + "/manage/" + getUrlName() + "/?emailTest=sent");
         } catch (Exception e) {
             rsp.sendRedirect2(req.getContextPath() + "/manage/" + getUrlName() + "/?emailTest=failed");
