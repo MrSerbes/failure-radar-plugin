@@ -1,0 +1,95 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:f="/lib/form">
+  <l:layout title="${%page.title}">
+    <l:main-panel>
+      <h1>${%page.title}</h1>
+      <p>${%page.description}</p>
+      <f:form method="post" action="save">
+        <f:section title="${%tracking.section}">
+          <f:entry title="${%tracking.count}" field="recentBuildCount" help="/plugin/failure-radar/help/help-recentBuildCount.html">
+            <input type="number" name="recentBuildCount" min="1" required="required" value="${it.recentBuildCount}" />
+          </f:entry>
+        </f:section>
+        <f:section title="${%email.section}">
+          <p>${%email.description}</p>
+          <j:choose>
+            <j:when test="${request.getParameter('emailTest') == 'sent'}">
+              <div class="jenkins-alert jenkins-alert--success" role="status">${%email.test.sent}</div>
+            </j:when>
+            <j:when test="${request.getParameter('emailTest') == 'failed'}">
+              <div class="jenkins-alert jenkins-alert--error" role="alert">${%email.test.failed}</div>
+            </j:when>
+            <j:when test="${request.getParameter('emailTest') == 'missingRecipients'}">
+              <div class="jenkins-alert jenkins-alert--warning" role="alert">${%email.test.missingRecipients}</div>
+            </j:when>
+          </j:choose>
+          <f:entry title="${%email.enabled}" field="emailNotificationsEnabled" help="/plugin/failure-radar/help/help-emailNotificationsEnabled.html">
+            <j:choose>
+              <j:when test="${it.emailNotificationsEnabled}"><input id="failure-radar-email-enabled" type="checkbox" name="emailNotificationsEnabled" value="true" checked="checked" /></j:when>
+              <j:otherwise><input id="failure-radar-email-enabled" type="checkbox" name="emailNotificationsEnabled" value="true" /></j:otherwise>
+            </j:choose>
+          </f:entry>
+          <f:entry title="${%email.recipients}" field="emailRecipients" help="/plugin/failure-radar/help/help-emailRecipients.html">
+            <j:choose>
+              <j:when test="${it.emailNotificationsEnabled}"><input id="failure-radar-email-recipients" type="text" name="emailRecipients" value="${it.emailRecipients}" placeholder="${%email.recipients.placeholder}" class="jenkins-input" /></j:when>
+              <j:otherwise><input id="failure-radar-email-recipients" type="text" name="emailRecipients" value="${it.emailRecipients}" placeholder="${%email.recipients.placeholder}" class="jenkins-input" disabled="disabled" /></j:otherwise>
+            </j:choose>
+          </f:entry>
+          <f:entry title="${%email.schedule}" field="emailSchedule" help="/plugin/failure-radar/help/help-emailSchedule.html">
+            <j:choose>
+              <j:when test="${it.emailNotificationsEnabled}"><input type="text" id="failure-radar-email-schedule" name="emailSchedule" value="${it.emailSchedule}" class="jenkins-input" /></j:when>
+              <j:otherwise><input type="text" id="failure-radar-email-schedule" name="emailSchedule" value="${it.emailSchedule}" class="jenkins-input" disabled="disabled" /></j:otherwise>
+            </j:choose>
+            <div id="failure-radar-next-email" role="status" aria-live="polite" data-calculating="${%email.calculating}" data-unavailable="${%email.unavailable}">${%email.next.help}</div>
+          </f:entry>
+        </f:section>
+        <f:bottomButtonBar>
+          <j:choose>
+            <j:when test="${it.emailNotificationsEnabled}"><button id="failure-radar-send-test-email" type="submit" formaction="sendTestEmail" formmethod="post" formnovalidate="formnovalidate" class="jenkins-button">${%email.sendTest}</button></j:when>
+            <j:otherwise><button id="failure-radar-send-test-email" type="submit" formaction="sendTestEmail" formmethod="post" formnovalidate="formnovalidate" class="jenkins-button" disabled="disabled">${%email.sendTest}</button></j:otherwise>
+          </j:choose>
+          <button type="submit" class="jenkins-button jenkins-button--primary">${%button.save}</button>
+        </f:bottomButtonBar>
+      </f:form>
+      <script type="text/javascript">
+        (function () {
+          const emailEnabled = document.getElementById('failure-radar-email-enabled');
+          const recipientsField = document.getElementById('failure-radar-email-recipients');
+          const scheduleField = document.getElementById('failure-radar-email-schedule');
+          const testEmailButton = document.getElementById('failure-radar-send-test-email');
+          const nextEmail = document.getElementById('failure-radar-next-email');
+          if (!emailEnabled || !recipientsField || !scheduleField || !testEmailButton || !nextEmail) return;
+          let timer;
+          function refreshNextEmail() {
+            nextEmail.textContent = nextEmail.dataset.calculating;
+            const url = new URL('previewSchedule', window.location.href);
+            url.searchParams.set('schedule', scheduleField.value);
+            fetch(url, { credentials: 'same-origin' })
+              .then(response => response.text().then(text => ({ ok: response.ok, text: text })))
+              .then(result => {
+                nextEmail.textContent = result.text;
+                nextEmail.setAttribute('aria-invalid', result.ok ? 'false' : 'true');
+              })
+              .catch(() => {
+                nextEmail.textContent = nextEmail.dataset.unavailable;
+                nextEmail.setAttribute('aria-invalid', 'true');
+              });
+          }
+          function updateEmailSettingsState() {
+            const disabled = !emailEnabled.checked;
+            recipientsField.disabled = disabled;
+            scheduleField.disabled = disabled;
+            testEmailButton.disabled = disabled;
+            if (!disabled) refreshNextEmail();
+          }
+          emailEnabled.addEventListener('change', updateEmailSettingsState);
+          scheduleField.addEventListener('input', function () {
+            clearTimeout(timer);
+            timer = setTimeout(refreshNextEmail, 400);
+          });
+          updateEmailSettingsState();
+        })();
+      </script>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

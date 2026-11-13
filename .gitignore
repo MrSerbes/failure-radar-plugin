@@ -1,0 +1,38 @@
+# Maven build output
+target/
+
+# Local Jenkins instance created by mvn hpi:run (contains jobs, credentials, and secrets)
+work/
+jenkins_home/
+
+# IntelliJ IDEA and other IDE-local files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs and local environment/secret files
+*.log
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p12
+*.jks
+
+# Local Jenkins screenshots
+/job-page.png
+/list-page-plugin.png
+/list-page.png
+/manage-page-menu.png

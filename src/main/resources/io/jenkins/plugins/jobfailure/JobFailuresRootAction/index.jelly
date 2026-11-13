@@ -1,0 +1,61 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+  <st:adjunct includes="io.jenkins.plugins.jobfailure.JobFailuresRootAction" />
+  <l:layout title="${%page.title}">
+    <l:main-panel>
+      <h1>${%page.title}</h1>
+      <p>${it.pageDescription}</p>
+      <j:choose>
+        <j:when test="${empty(it.trackedJobs)}">
+          <p>${%page.empty}</p>
+        </j:when>
+        <j:otherwise>
+          <j:forEach var="group" items="${it.jobGroups}">
+            <section class="failure-radar__group">
+              <div class="failure-radar__group-heading">
+                <div>
+                  <h2>${group.title}</h2>
+                  <p>${group.description}</p>
+                </div>
+                <span class="failure-radar__count">${group.jobCount}</span>
+              </div>
+              <j:choose>
+                <j:when test="${empty(group.jobs)}">
+                  <p class="failure-radar__empty">${%group.empty}</p>
+                </j:when>
+                <j:otherwise>
+                  <table class="jenkins-table failure-radar__table">
+                    <thead><tr><th>${%column.job}</th><th>${%column.builds} <span class="failure-radar__hint">${%build.newestFirst}</span></th></tr></thead>
+                    <tbody>
+                      <j:forEach var="job" items="${group.jobs}">
+                        <tr>
+                          <td class="failure-radar__job"><a href="${rootURL}/${job.url}">${job.fullDisplayName}</a></td>
+                          <td>
+                            <j:choose>
+                              <j:when test="${empty(job.builds)}"><span class="failure-radar__empty">${%build.none}</span></j:when>
+                              <j:otherwise>
+                                <div class="failure-radar__builds">
+                                  <j:forEach var="build" items="${job.builds}">
+                                    <a class="failure-radar__build ${build.statusClass}" href="${rootURL}/${build.url}" title="${build.accessibleLabel}" aria-label="${build.accessibleLabel}">
+                                      <img class="failure-radar__icon" src="${rootURL}/images/24x24/${build.iconName}" alt="" />
+                                      <span class="failure-radar__number">#${build.number}</span>
+                                      <span class="failure-radar__status">${build.status}</span>
+                                    </a>
+                                  </j:forEach>
+                                </div>
+                              </j:otherwise>
+                            </j:choose>
+                          </td>
+                        </tr>
+                      </j:forEach>
+                    </tbody>
+                  </table>
+                </j:otherwise>
+              </j:choose>
+            </section>
+          </j:forEach>
+        </j:otherwise>
+      </j:choose>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+  <p>Track selected Jenkins jobs, review recent build failures, and configure email summaries from Manage Jenkins.</p>
+</div>

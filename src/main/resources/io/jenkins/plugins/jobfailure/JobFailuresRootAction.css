@@ -1,0 +1,36 @@
+.failure-radar__group { margin: 1.75rem 0 2.25rem; }
+.failure-radar__group-heading { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 1rem; }
+.failure-radar__group-heading h2 { font-size: 1.25rem; margin: 0; }
+.failure-radar__group-heading p { color: var(--text-color-secondary, #6b7280); margin: 0.35rem 0 0; }
+.failure-radar__count { align-items: center; background: var(--background, #f3f4f6); border: 1px solid var(--jenkins-border-color, #d1d5db); border-radius: 999px; display: inline-flex; font-size: 0.9rem; font-weight: 700; justify-content: center; min-width: 2rem; padding: 0.2rem 0.55rem; }
+.failure-radar__table th:first-child { width: 24%; }
+.failure-radar__hint { color: var(--text-color-secondary, #6b7280); font-size: 0.85em; font-weight: normal; margin-left: 0.45rem; }
+.failure-radar__job { font-weight: 600; vertical-align: middle; }
+.failure-radar__builds { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.failure-radar__build {
+  --failure-radar-status: #6b7280;
+  align-items: center;
+  background: var(--background, #fff);
+  border: 1px solid var(--jenkins-border-color, #d1d5db);
+  border-left: 4px solid var(--failure-radar-status);
+  border-radius: 0.6rem;
+  color: var(--text-color, #222);
+  display: inline-flex;
+  gap: 0.45rem;
+  min-width: 7.4rem;
+  padding: 0.5rem 0.7rem;
+  text-decoration: none;
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+.failure-radar__build:hover, .failure-radar__build:focus-visible { box-shadow: 0 2px 8px rgb(0 0 0 / 14%); text-decoration: none; transform: translateY(-1px); }
+.failure-radar__icon { flex: 0 0 24px; height: 24px; width: 24px; }
+.failure-radar__number { font-weight: 700; }
+.failure-radar__status { font-size: 0.82em; }
+.failure-radar__build--success { --failure-radar-status: #238636; }
+.failure-radar__build--failure { --failure-radar-status: #cf222e; }
+.failure-radar__build--unstable { --failure-radar-status: #bf8700; }
+.failure-radar__build--aborted { --failure-radar-status: #6e7781; }
+.failure-radar__build--running { --failure-radar-status: #0969da; }
+.failure-radar__build--other { --failure-radar-status: #8c959f; }
+.failure-radar__empty { color: var(--text-color-secondary, #6b7280); }
+@media (max-width: 700px) { .failure-radar__table th:first-child { width: auto; } .failure-radar__build { min-width: 6.2rem; } }
